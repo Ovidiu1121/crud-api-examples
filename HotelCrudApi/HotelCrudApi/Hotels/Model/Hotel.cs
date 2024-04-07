@@ -21,7 +21,7 @@ namespace HotelCrudApi.Hotels.Model
 
         [Required]
         [Column("stars")]
-        public string Stars { get; set; }
+        public int Stars { get; set; }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BookCrudApi.Books.Model;
 using BookCrudApi.Books.Repository.interfaces;
+using BookCrudApi.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCrudApi.Books.Controller
@@ -36,6 +37,30 @@ namespace BookCrudApi.Books.Controller
         {
             var books=await _bookRepository.GetByTitleAsync(title);
             return Ok(books);
+        }
+
+        [HttpPost("createBook")]
+        public async Task<ActionResult<Book>>CreateBook([FromBody] CreateBookRequest request)
+        {
+            var books = await _bookRepository.CreateBook(request);
+
+            return Ok(books);
+        }
+
+        [HttpPut("updateBook")]
+        public async Task<ActionResult<Book>>UpdateBook([FromQuery] int id, UpdateBookRequest request)
+        {
+            var book = await _bookRepository.UpdateBook(id, request);
+
+            return Ok(book);
+        }
+
+        [HttpDelete("/deleteById")]
+        public async Task<ActionResult<Book>> DeleteProduct([FromQuery] int id)
+        {
+            var book = await _bookRepository.DeleteBookById(id);
+
+            return Ok(book);
         }
 
     }

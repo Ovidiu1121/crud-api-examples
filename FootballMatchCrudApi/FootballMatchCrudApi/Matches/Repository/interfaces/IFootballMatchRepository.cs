@@ -1,5 +1,5 @@
-﻿using FootballMatchCrudApi.Matches.Model;
-using System.Text.RegularExpressions;
+﻿using FootballMatchCrudApi.Dto;
+using FootballMatchCrudApi.Matches.Model;
 
 namespace FootballMatchCrudApi.Matches.Repository.interfaces
 {
@@ -8,5 +8,8 @@ namespace FootballMatchCrudApi.Matches.Repository.interfaces
         Task<IEnumerable<FootballMatch>> GetAllAsync();
         Task<FootballMatch> GetByStadiumAsync(string stadium);
         Task<FootballMatch> GetByScoreAsync(string score);
+        Task<FootballMatch> CreateMatch(CreateMatchRequest request);
+        Task<FootballMatch> UpdateMatch(int id, UpdateMatchRequest request);
+        Task<FootballMatch> DeleteMatchById(int id);
     }
 }

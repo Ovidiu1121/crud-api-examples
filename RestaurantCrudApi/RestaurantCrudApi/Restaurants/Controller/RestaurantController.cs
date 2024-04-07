@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RestaurantCrudApi.Dto;
 using RestaurantCrudApi.Restaurants.Model;
 using RestaurantCrudApi.Restaurants.Repository.interfaces;
 
@@ -38,6 +39,14 @@ namespace RestaurantCrudApi.Restaurants.Controller
         {
             var restaurants = await _restaurantRepository.GetByLocationAsync(location);
             return Ok(restaurants);
+        }
+
+        [HttpPost("/createRestaurant")]
+        public async Task<ActionResult<Restaurant>> CreateRestaurant([FromBody] CreateRestaurantRequest request)
+        {
+            var products = await _restaurantRepository.Create(request);
+
+            return Ok(products);
         }
 
     }

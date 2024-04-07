@@ -7671,11 +7671,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Data\\asp.net\\crud-apis\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
+      "projectUniqueName": "C:\\Data\\asp.net\\crud-apis\\More-Examples\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
       "projectName": "CarCrudApi",
-      "projectPath": "C:\\Data\\asp.net\\crud-apis\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
+      "projectPath": "C:\\Data\\asp.net\\crud-apis\\More-Examples\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
       "packagesPath": "C:\\Users\\Utilizator\\.nuget\\packages\\",
-      "outputPath": "C:\\Data\\asp.net\\crud-apis\\CarCrudApi\\CarCrudApi\\obj\\",
+      "outputPath": "C:\\Data\\asp.net\\crud-apis\\More-Examples\\CarCrudApi\\CarCrudApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

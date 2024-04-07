@@ -1,5 +1,6 @@
 ﻿using AnimalCrudApi.Animals.Model;
 using AnimalCrudApi.Animals.Repository.interfaces;
+using AnimalCrudApi.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalCrudApi.Controllers
@@ -38,6 +39,31 @@ namespace AnimalCrudApi.Controllers
             var animals = await _animalRepository.GetByIdAsync(id);
             return Ok(animals);
         }
+
+        [HttpPost("createAnimal")]
+        public async Task<ActionResult<Animal>> CreateProduct([FromBody] CreateAnimalRequest request)
+        {
+            var animal = await _animalRepository.CreateAnimal(request);
+
+            return Ok(animal);
+        }
+
+        [HttpPut("/updateAnimal")]
+        public async Task<ActionResult<Animal>> UpdateAnimal([FromQuery] int id, UpdateAnimalRequest request)
+        {
+            var animal = await _animalRepository.UpdateAnimal(id, request);
+
+            return Ok(animal);
+        }
+
+        [HttpDelete("/deleteById")]
+        public async Task<ActionResult<Animal>> DeleteAnimal([FromQuery] int id)
+        {
+            var animal = await _animalRepository.DeleteAnimalById(id);
+
+            return Ok(animal);
+        }
+
 
     }
 }

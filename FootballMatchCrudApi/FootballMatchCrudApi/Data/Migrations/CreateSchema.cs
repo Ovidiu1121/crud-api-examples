@@ -12,7 +12,7 @@ namespace FootballMatchCrudApi.Data.Migrations
 
         public override void Up()
         {
-            Create.Table("footballMatch")
+            Create.Table("footballmatch")
                  .WithColumn("id").AsInt32().PrimaryKey().Identity()
                   .WithColumn("stadium").AsString(128).NotNullable()
                    .WithColumn("score").AsString(128).NotNullable()

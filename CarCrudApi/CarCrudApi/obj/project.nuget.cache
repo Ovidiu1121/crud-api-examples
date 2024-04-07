@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2whA1F1GKG8PZ/V1sMU7hVolYbRx5z95wbx1uGYqtWMu9wFFcOh6Glw+Jl1ep/EOnH+tOwrBRrvR4xGr7F3g1g==",
+  "dgSpecHash": "gq6bjojO3CxDqZ6A4yu2+Wi0P4ReLYcjEc2gKXN3O3cYtdhObE2eVw+q4rcu+Q66op8B4NxRLeNHQLoLA7jdVA==",
   "success": true,
-  "projectFilePath": "C:\\Data\\asp.net\\crud-apis\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
+  "projectFilePath": "C:\\Data\\asp.net\\crud-apis\\More-Examples\\CarCrudApi\\CarCrudApi\\CarCrudApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Utilizator\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\Utilizator\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
