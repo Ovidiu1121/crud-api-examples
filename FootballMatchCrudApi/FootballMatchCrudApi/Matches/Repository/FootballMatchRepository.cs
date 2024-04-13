@@ -29,9 +29,9 @@ namespace FootballMatchCrudApi.Matches.Repository
             return match;
         }
 
-        public async Task<FootballMatch> DeleteMatchById(int id)
+        public async Task<FootballMatch> DeleteMatchByStadium(string stadium)
         {
-            var match = await _context.Matches.FindAsync(id);
+            var match = await _context.Matches.FindAsync(stadium);
 
             _context.Matches.Remove(match);
 
@@ -55,10 +55,10 @@ namespace FootballMatchCrudApi.Matches.Repository
             return await _context.Matches.FirstOrDefaultAsync(obj => obj.Stadium.Equals(stadium));
         }
 
-        public async Task<FootballMatch> UpdateMatch(int id, UpdateMatchRequest request)
+        public async Task<FootballMatch> UpdateMatch(UpdateMatchRequest request)
         {
 
-            var match = await _context.Matches.FindAsync(id);
+            var match = await _context.Matches.FindAsync(request.Id);
 
             match.Stadium= request.Stadium ?? match.Stadium;
             match.Score= request.Score ?? match.Score;

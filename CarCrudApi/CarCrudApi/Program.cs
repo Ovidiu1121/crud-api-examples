@@ -2,6 +2,8 @@
 
 using CarCrudApi.Cars.Repository;
 using CarCrudApi.Cars.Repository.interfaces;
+using CarCrudApi.Cars.Service;
+using CarCrudApi.Cars.Service.Interfaces;
 using CarCrudApi.Data;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarCommandService, CarCommandService>();
+builder.Services.AddScoped<ICarQueryService, CarQueryService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

@@ -9,7 +9,7 @@ namespace AnimalCrudApi.Animals.Repository.interfaces
         Task<Animal> GetByNameAsync(string name);
         Task<Animal> GetByIdAsync(int id);
         Task<Animal> CreateAnimal(CreateAnimalRequest request);
-        Task<Animal> UpdateAnimal(int id, UpdateAnimalRequest request);
+        Task<Animal> UpdateAnimal(UpdateAnimalRequest request);
         Task<Animal> DeleteAnimalById(int id);
 
 

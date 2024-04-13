@@ -1,68 +1,91 @@
 ﻿using FootballMatchCrudApi.Dto;
+using FootballMatchCrudApi.Matches.Controller.Interfaces;
 using FootballMatchCrudApi.Matches.Model;
 using FootballMatchCrudApi.Matches.Repository.interfaces;
+using FootballMatchCrudApi.Matches.Service.Interfaces;
+using FootballMatchCrudApi.System.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballMatchCrudApi.Matches.Controller
 {
-    [ApiController]
-    [Route("match/api/v1")]
-    public class MatchControler: ControllerBase
+    public class MatchControler: MatchApiController
     {
+        private IMatchCommandService _matchCommandService;
+        private IMatchQueryService _matchQueryService;
 
-        private readonly ILogger _logger;
-
-        private IFootballMatchRepository _footballMatchRepository;
-
-        public MatchControler(ILogger<MatchControler> logger, IFootballMatchRepository footballMatchRepository)
+        public MatchControler(IMatchCommandService matchCommandService, IMatchQueryService matchQueryService)
         {
-            _logger = logger;
-            _footballMatchRepository = footballMatchRepository;
+            _matchCommandService=matchCommandService;
+            _matchQueryService=matchQueryService;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<FootballMatch>>> GetAll()
+        public override async Task<ActionResult<FootballMatch>> CreateMatch([FromBody] CreateMatchRequest request)
         {
-            var animals = await _footballMatchRepository.GetAllAsync();
-            return Ok(animals);
+            try
+            {
+                var matches = await _matchCommandService.CreateMatch(request);
+
+                return Ok(matches);
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("/stadium")]
-        public async Task<ActionResult<IEnumerable<FootballMatch>>> GetByStadium(string stadium)
+        public override async Task<ActionResult<FootballMatch>> DeleteMatch([FromRoute] string stadium)
         {
-            var animals = await _footballMatchRepository.GetByStadiumAsync(stadium);
-            return Ok(animals);
+            try
+            {
+                var matches = await _matchCommandService.DeleteMatch(stadium);
+
+                return Accepted("", matches);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpGet("/score")]
-        public async Task<ActionResult<IEnumerable<FootballMatch>>> GetByScore(string score)
+        public override async Task<ActionResult<IEnumerable<FootballMatch>>> GetAll()
         {
-            var animals = await _footballMatchRepository.GetByScoreAsync(score);
-            return Ok(animals);
+
+            try
+            {
+                var matches = await _matchQueryService.GetAllMatches();
+                return Ok(matches);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPost("/createMatch")]
-        public async Task<ActionResult<FootballMatch>> CreateMatch([FromBody] CreateMatchRequest request)
+        public override async Task<ActionResult<FootballMatch>> GetByStadiumRoute([FromRoute] string stadium)
         {
-            var match = await _footballMatchRepository.CreateMatch(request);
-
-            return Ok(match);
+            try
+            {
+                var matches = await _matchQueryService.GetByStadium(stadium);
+                return Ok(matches);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("/updateMatch")]
-        public async Task<ActionResult<FootballMatch>> UpdateMatch([FromQuery] int id, UpdateMatchRequest request)
+        public override async Task<ActionResult<FootballMatch>> UpdateMatch([FromBody] UpdateMatchRequest request)
         {
-            var match = await _footballMatchRepository.UpdateMatch(id, request);
+            try
+            {
+                var matches = await _matchCommandService.UpdateMatch(request);
 
-            return Ok(match);
-        }
-
-        [HttpDelete("/deleteById")]
-        public async Task<ActionResult<FootballMatch>> DeleteMatch([FromQuery] int id)
-        {
-            var match = await _footballMatchRepository.DeleteMatchById(id);
-
-            return Ok(match);
+                return Ok(matches);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

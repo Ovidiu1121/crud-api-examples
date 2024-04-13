@@ -1,5 +1,7 @@
 using AnimalCrudApi.Animals.Repository;
 using AnimalCrudApi.Animals.Repository.interfaces;
+using AnimalCrudApi.Animals.Service;
+using AnimalCrudApi.Animals.Service.Interfaces;
 using AnimalCrudApi.Data;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ builder.Services.AddFluentMigratorCore()
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
+builder.Services.AddScoped<IAnimalCommandService, AnimalCommandService>();
+builder.Services.AddScoped<IAnimalQueryService, AnimalQueryService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

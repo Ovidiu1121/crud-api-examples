@@ -1,67 +1,90 @@
-﻿using BookCrudApi.Books.Model;
+﻿using BookCrudApi.Books.Controller.Interfaces;
+using BookCrudApi.Books.Model;
 using BookCrudApi.Books.Repository.interfaces;
+using BookCrudApi.Books.Service.Interfaces;
 using BookCrudApi.Dto;
+using BookCrudApi.System.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCrudApi.Books.Controller
 {
-    [ApiController]
-    [Route("book/api/v1")]
-    public class BookController:ControllerBase
+    public class BookController:BookApiController
     {
-        private ILogger _logger;
-        private IBookRepository _bookRepository;
+        private IBookCommandService _bookCommandService;
+        private IBookQueryService _bookQueryService;
 
-        public BookController(ILogger<BookController> logger, IBookRepository bookRepository)
+        public BookController(IBookCommandService bookCommandService, IBookQueryService bookQueryService)
         {
-            _logger = logger;
-            _bookRepository = bookRepository;
+           _bookCommandService = bookCommandService;
+            _bookQueryService = bookQueryService;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Book>>> GetAll()
+        public override async Task<ActionResult<Book>> CreateBook([FromBody] CreateBookRequest bookRequest)
         {
-            var books=await _bookRepository.GetAllAsync();
-            return Ok(books);
+            try
+            {
+                var books = await _bookCommandService.CreateBook(bookRequest);
+
+                return Ok(books);
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<IEnumerable<Book>>>GetById(int id)
+        public override async Task<ActionResult<Book>> DeleteBook([FromRoute] int id)
         {
-            var books=await _bookRepository.GetByIdAsync(id);
-            return Ok(books);
+            try
+            {
+                var books = await _bookCommandService.DeleteBookById(id);
+
+                return Accepted("", books);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpGet("title")]
-        public async Task<ActionResult<IEnumerable<Book>>>GetByTitle(string title)
+        public override async Task<ActionResult<IEnumerable<Book>>> GetAll()
         {
-            var books=await _bookRepository.GetByTitleAsync(title);
-            return Ok(books);
+            try
+            {
+                var books = await _bookQueryService.GetAll();
+                return Ok(books);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPost("createBook")]
-        public async Task<ActionResult<Book>>CreateBook([FromBody] CreateBookRequest request)
+        public override async Task<ActionResult<Book>> GetByTitleRoute([FromRoute] string title)
         {
-            var books = await _bookRepository.CreateBook(request);
-
-            return Ok(books);
+            try
+            {
+                var books = await _bookQueryService.GetByTitle(title);
+                return Ok(books);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("updateBook")]
-        public async Task<ActionResult<Book>>UpdateBook([FromQuery] int id, UpdateBookRequest request)
+        public override async Task<ActionResult<Book>> UpdateBook([FromBody] UpdateBookRequest bookRequest)
         {
-            var book = await _bookRepository.UpdateBook(id, request);
+            try
+            {
+                var books = await _bookCommandService.UpdateBook(bookRequest);
 
-            return Ok(book);
+                return Ok(books);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
-        [HttpDelete("/deleteById")]
-        public async Task<ActionResult<Book>> DeleteProduct([FromQuery] int id)
-        {
-            var book = await _bookRepository.DeleteBookById(id);
-
-            return Ok(book);
-        }
-
     }
 }

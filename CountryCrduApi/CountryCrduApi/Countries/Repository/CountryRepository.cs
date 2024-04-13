@@ -45,6 +45,11 @@ namespace CountryCrduApi.Countries.Repository.interfaces
             return await _context.Countries.ToListAsync();
         }
 
+        public async Task<Country> GetByIdAsync(int id)
+        {
+            return await _context.Countries.FirstOrDefaultAsync(obj => obj.Id.Equals(id));
+        }
+
         public async Task<Country> GetByNameAsync(string name)
         {
             return await _context.Countries.FirstOrDefaultAsync(obj => obj.Name.Equals(name));
@@ -56,9 +61,9 @@ namespace CountryCrduApi.Countries.Repository.interfaces
 
         }
 
-        public async Task<Country> UpdateCountry(int id, UpdateCountryRequest request)
+        public async Task<Country> UpdateCountry(UpdateCountryRequest request)
         {
-            var country = await _context.Countries.FindAsync(id);
+            var country = await _context.Countries.FindAsync(request.Id);
 
             country.Name= request.Name ?? country.Name;
             country.Capital= request.Capital ?? country.Capital;

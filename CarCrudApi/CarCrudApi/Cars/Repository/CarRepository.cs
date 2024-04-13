@@ -58,9 +58,9 @@ namespace CarCrudApi.Cars.Repository
            return await _context.Cars.FirstOrDefaultAsync(car => car.Id.Equals(id));
         }
 
-        public async Task<Car> UpdateCar(int id, UpdateCarRequest request)
+        public async Task<Car> UpdateCar(UpdateCarRequest request)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _context.Cars.FindAsync(request.Id);
 
             car.Brand=request.Brand??car.Brand;
             car.Price=request.Price??car.Price;

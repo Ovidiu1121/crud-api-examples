@@ -2,6 +2,8 @@ using FluentMigrator.Runner;
 using FootballMatchCrudApi.Data;
 using FootballMatchCrudApi.Matches.Repository;
 using FootballMatchCrudApi.Matches.Repository.interfaces;
+using FootballMatchCrudApi.Matches.Service;
+using FootballMatchCrudApi.Matches.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,8 @@ builder.Services.AddFluentMigratorCore()
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
 builder.Services.AddScoped<IFootballMatchRepository, FootballMatchRepository>();
+builder.Services.AddScoped<IMatchCommandService, MatchCommandService>();
+builder.Services.AddScoped<IMatchQueryService, MatchQueryService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

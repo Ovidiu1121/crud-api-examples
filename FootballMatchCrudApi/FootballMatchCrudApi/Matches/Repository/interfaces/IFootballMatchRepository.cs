@@ -9,7 +9,7 @@ namespace FootballMatchCrudApi.Matches.Repository.interfaces
         Task<FootballMatch> GetByStadiumAsync(string stadium);
         Task<FootballMatch> GetByScoreAsync(string score);
         Task<FootballMatch> CreateMatch(CreateMatchRequest request);
-        Task<FootballMatch> UpdateMatch(int id, UpdateMatchRequest request);
-        Task<FootballMatch> DeleteMatchById(int id);
+        Task<FootballMatch> UpdateMatch(UpdateMatchRequest request);
+        Task<FootballMatch> DeleteMatchByStadium(string stadium);
     }
 }

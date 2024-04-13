@@ -1,5 +1,7 @@
 using BookCrudApi.Books.Repository;
 using BookCrudApi.Books.Repository.interfaces;
+using BookCrudApi.Books.Service;
+using BookCrudApi.Books.Service.Interfaces;
 using BookCrudApi.Data;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ builder.Services.AddFluentMigratorCore()
     .AddLogging(lb => lb.AddFluentMigratorConsole());
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IBookCommandService, BookCommandService>();
+builder.Services.AddScoped<IBookQueryService, BookQueryService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

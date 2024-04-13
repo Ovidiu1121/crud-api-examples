@@ -1,4 +1,6 @@
 using CountryCrduApi.Countries.Repository.interfaces;
+using CountryCrduApi.Countries.Service;
+using CountryCrduApi.Countries.Service.Interfaces;
 using CountryCrduApi.Data;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<ICountryCommandService, CountryCommandService>();
+builder.Services.AddScoped<iCountryQueryService, CountryQueryService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

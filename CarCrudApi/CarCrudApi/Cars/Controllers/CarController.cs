@@ -1,70 +1,98 @@
-﻿using CarCrudApi.Cars.Model;
+﻿using CarCrudApi.Cars.Controllers.Interfaces;
+using CarCrudApi.Cars.Model;
 using CarCrudApi.Cars.Repository.interfaces;
+using CarCrudApi.Cars.Service.Interfaces;
 using CarCrudApi.Dto;
+using CarCrudApi.System.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarCrudApi.Cars.Controllers
 {
-    [ApiController]
-    [Route("car/api/v1")]
-    public class CarController:ControllerBase
+    public class CarController:CarApiController
     {
+        private ICarCommandService _carCommandService;
+        private ICarQueryService _carQueryService;
 
-        private readonly ILogger<CarController> _logger;
-
-        private ICarRepository _carRepository;
-
-        public CarController(ILogger<CarController> logger,ICarRepository carRepository)
+        public CarController(ICarCommandService carCommandService, ICarQueryService carQueryService)
         {
-            _logger = logger;
-            _carRepository = carRepository;
+            _carCommandService = carCommandService;
+            _carQueryService = carQueryService;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Car>>> GetAll()
+        public override async Task<ActionResult<Car>> CreateCar([FromBody] CreateCarRequest request)
         {
-            var cars = await _carRepository.GetAllAsync();
-            return Ok(cars);
+            try
+            {
+                var cars = await _carCommandService.CreateCar(request);
+
+                return Ok(cars);
+            }
+            catch (InvalidPrice ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("/brand")]
-        public async Task<ActionResult<IEnumerable<Car>>> GetByBrand(string brand)
+        public override async Task<ActionResult<Car>> DeleteCar([FromRoute] int id)
         {
-            var car = await _carRepository.GetByBrandAsync(brand);
-            return Ok(car);
+            try
+            {
+                var cars = await _carCommandService.DeleteCar(id);
+
+                return Accepted("", cars);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-
-        [HttpGet("/id")]
-        public async Task<ActionResult<IEnumerable<Car>>> GetById(int id)
+        public override async Task<ActionResult<IEnumerable<Car>>> GetAll()
         {
-            var car = await _carRepository.GetByIdAsync(id);
-            return Ok(car);
+            try
+            {
+                var cars = await _carQueryService.GetAllCar();
+                return Ok(cars);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPost("/createCar")]
-        public async Task<ActionResult<Car>> CreateCar([FromBody] CreateCarRequest request)
+        public override async Task<ActionResult<Car>> GetByBrandRoute([FromRoute] string brand)
         {
-            var car = await _carRepository.CreateCar(request);
-
-            return Ok(car);
+            try
+            {
+                var cars = await _carQueryService.GetByBrand(brand);
+                return Ok(cars);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("/updateCar")]
-        public async Task<ActionResult<Car>> UpdateCAr([FromQuery] int id, UpdateCarRequest request)
+        public override async Task<ActionResult<Car>> UpdateCar([FromBody] UpdateCarRequest request)
         {
-            var car = await _carRepository.UpdateCar(id, request);
+            try
+            {
+                var cars = await _carCommandService.UpdateCar(request);
 
-            return Ok(car);
+                return Ok(cars);
+            }
+            catch (InvalidPrice ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
-        [HttpDelete("/deleteById")]
-        public async Task<ActionResult<Car>> DeleteCar([FromQuery] int id)
-        {
-            var car = await _carRepository.DeleteCarById(id);
-
-            return Ok(car);
-        }
-
     }
 }

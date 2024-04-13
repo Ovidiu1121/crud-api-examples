@@ -9,7 +9,7 @@ namespace CarCrudApi.Cars.Repository.interfaces
         Task<Car> GetByBrandAsync(string brand);
         Task<Car> GetByIdAsync(int id);
         Task<Car> CreateCar(CreateCarRequest request);
-        Task<Car> UpdateCar(int id, UpdateCarRequest request);
+        Task<Car> UpdateCar(UpdateCarRequest request);
         Task<Car> DeleteCarById(int id);
 
     }

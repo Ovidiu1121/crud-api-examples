@@ -58,9 +58,9 @@ namespace AnimalCrudApi.Animals.Repository
             return _context.Animals.FirstOrDefault(x => x.Name == name);
         }
 
-        public async Task<Animal> UpdateAnimal(int id, UpdateAnimalRequest request)
+        public async Task<Animal> UpdateAnimal(UpdateAnimalRequest request)
         {
-            var animal = await _context.Animals.FindAsync(id);
+            var animal = await _context.Animals.FindAsync(request.Id);
 
             animal.Name= request.Name ?? animal.Name;
             animal.Age=request.Age ?? animal.Age;

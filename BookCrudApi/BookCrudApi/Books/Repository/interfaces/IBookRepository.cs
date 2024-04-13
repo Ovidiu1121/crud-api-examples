@@ -9,7 +9,7 @@ namespace BookCrudApi.Books.Repository.interfaces
         Task<Book> GetByIdAsync(int id);
         Task<Book> GetByTitleAsync(string title);
         Task<Book> CreateBook(CreateBookRequest request);
-        Task<Book> UpdateBook(int id,UpdateBookRequest request);
+        Task<Book> UpdateBook(UpdateBookRequest request);
         Task<Book> DeleteBookById(int id);
 
     }

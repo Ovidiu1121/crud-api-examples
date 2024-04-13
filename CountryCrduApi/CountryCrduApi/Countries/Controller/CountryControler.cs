@@ -1,70 +1,90 @@
-﻿using CountryCrduApi.Countries.Model;
+﻿using CountryCrduApi.Countries.Controller.Interfaces;
+using CountryCrduApi.Countries.Model;
 using CountryCrduApi.Countries.Repository.interfaces;
+using CountryCrduApi.Countries.Service.Interfaces;
 using CountryCrduApi.Dto;
+using CountryCrduApi.System.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CountryCrduApi.Countries.Controller
 {
-
-    [ApiController]
-    [Route("country/api/v1")]
-    public class CountryControler: ControllerBase
+    public class CountryControler: CountryApiController
     {
+        private ICountryCommandService _countryCommandService;
+        private iCountryQueryService _countryQueryService;
 
-        private readonly ILogger _logger;
-
-        private ICountryRepository _countryRepository;
-
-        public CountryControler(ILogger<CountryControler> logger, ICountryRepository countryRepository)
+        public CountryControler(ICountryCommandService coutnryCommandService, iCountryQueryService countryQueryService)
         {
-            _logger = logger;
-            _countryRepository = countryRepository;
+            _countryCommandService = coutnryCommandService;
+            _countryQueryService = countryQueryService;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Country>>> GetAll()
+        public async override Task<ActionResult<Country>> CreateCountry([FromBody] CreateCountryRequest request)
         {
-            var countries = await _countryRepository.GetAllAsync();
-            return Ok(countries);
+            try
+            {
+                var countries = await _countryCommandService.CreateCountry(request);
+
+                return Ok(countries);
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("/name")]
-        public async Task<ActionResult<IEnumerable<Country>>> GetByName(string name)
+        public async override Task<ActionResult<Country>> DeleteCountry([FromRoute] int id)
         {
-            var countries = await _countryRepository.GetByNameAsync(name);
-            return Ok(countries);
+            try
+            {
+                var countries = await _countryCommandService.DeleteCountry(id);
+
+                return Accepted("", countries);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpGet("/population")]
-        public async Task<ActionResult<IEnumerable<Country>>> GetByPopulation(int population)
+        public async override Task<ActionResult<IEnumerable<Country>>> GetAll()
         {
-            var countries = await _countryRepository.GetByPopulationAsync(population);
-            return Ok(countries);
+            try
+            {
+                var countries = await _countryQueryService.GetAllCountries();
+                return Ok(countries);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPost("/createCountry")]
-        public async Task<ActionResult<Country>> CreateCountry([FromBody] CreateCountryRequest request)
+        public async override Task<ActionResult<Country>> GetByNameRoute([FromRoute] string name)
         {
-            var country = await _countryRepository.CreateCountry(request);
-
-            return Ok(country);
+            try
+            {
+                var countries = await _countryQueryService.GetByName(name);
+                return Ok(countries);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("/updateCountry")]
-        public async Task<ActionResult<Country>> UpdateCountry([FromQuery] int id, UpdateCountryRequest request)
+        public async override Task<ActionResult<Country>> UpdateCountry([FromBody] UpdateCountryRequest request)
         {
-            var country = await _countryRepository.UpdateCountry(id, request);
+            try
+            {
+                var countries = await _countryCommandService.UpdateCountry(request);
 
-            return Ok(country);
+                return Ok(countries);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
-        [HttpDelete("/deleteById")]
-        public async Task<ActionResult<Country>> DeleteCountry([FromQuery] int id)
-        {
-            var country = await _countryRepository.DeleteCountryById(id);
-
-            return Ok(country);
-        }
-
     }
 }

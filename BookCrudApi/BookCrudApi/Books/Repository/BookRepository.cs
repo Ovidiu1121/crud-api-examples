@@ -45,9 +45,9 @@ namespace BookCrudApi.Books.Repository
             return book;
         }
 
-        public async Task<Book> UpdateBook(int id,UpdateBookRequest request)
+        public async Task<Book> UpdateBook(UpdateBookRequest request)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books.FindAsync(request);
 
             book.Title= request.Title ?? book.Title;
             book.Author=request.Author ?? book.Author;

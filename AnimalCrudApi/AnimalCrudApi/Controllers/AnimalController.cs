@@ -1,69 +1,90 @@
 ﻿using AnimalCrudApi.Animals.Model;
 using AnimalCrudApi.Animals.Repository.interfaces;
+using AnimalCrudApi.Animals.Service.Interfaces;
+using AnimalCrudApi.Controllers.Interfaces;
 using AnimalCrudApi.Dto;
+using AnimalCrudApi.System.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalCrudApi.Controllers
 {
-    [ApiController]
-    [Route("animal/api/v1")]
-    public class AnimalController: ControllerBase
+    public class AnimalController:AnimalApiController
     {
-        private readonly ILogger _logger;
+        private IAnimalCommandService _animalCommandService;
+        private IAnimalQueryService _animalQueryService;
 
-        private IAnimalRepository _animalRepository;
-
-        public AnimalController(ILogger<AnimalController>logger, IAnimalRepository animalRepository)
+        public AnimalController(IAnimalCommandService animalCommandService, IAnimalQueryService animalQueryService)
         {
-            _logger = logger;
-            _animalRepository = animalRepository;
+            _animalCommandService=animalCommandService;
+            _animalQueryService=animalQueryService;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Animal>>> GetAll()
+        public override async Task<ActionResult<Animal>> CreateAnimal([FromBody] CreateAnimalRequest animalRequest)
         {
-            var animals=await _animalRepository.GetAllAsync();
-            return Ok(animals);
+            try
+            {
+                var animals = await _animalCommandService.CreateAnimal(animalRequest);
+
+                return Ok(animals);
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("name")]
-        public async Task<ActionResult<IEnumerable<Animal>>> GetName(string name)
+        public override async Task<ActionResult<Animal>> DeleteAnimal([FromRoute] int id)
         {
-            var animals = await _animalRepository.GetByNameAsync(name);
-            return Ok(animals);
+            try
+            {
+                var animals = await _animalCommandService.DeleteAnimal(id);
+
+                return Accepted("", animals);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<IEnumerable<Animal>>> GetId(int id)
+        public override async Task<ActionResult<IEnumerable<Animal>>> GetAll()
         {
-            var animals = await _animalRepository.GetByIdAsync(id);
-            return Ok(animals);
+            try
+            {
+                var animals = await _animalQueryService.GetAll();
+                return Ok(animals);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPost("createAnimal")]
-        public async Task<ActionResult<Animal>> CreateProduct([FromBody] CreateAnimalRequest request)
+        public override async Task<ActionResult<Animal>> GetByNameRoute([FromRoute] string name)
         {
-            var animal = await _animalRepository.CreateAnimal(request);
-
-            return Ok(animal);
+            try
+            {
+                var animals = await _animalQueryService.GetByName(name);
+                return Ok(animals);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("/updateAnimal")]
-        public async Task<ActionResult<Animal>> UpdateAnimal([FromQuery] int id, UpdateAnimalRequest request)
+        public override async Task<ActionResult<Animal>> UpdateAnimal([FromBody] UpdateAnimalRequest animalRequest)
         {
-            var animal = await _animalRepository.UpdateAnimal(id, request);
+            try
+            {
+                var animals = await _animalCommandService.UpdateAnimal(animalRequest);
 
-            return Ok(animal);
+                return Ok(animals);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
-        [HttpDelete("/deleteById")]
-        public async Task<ActionResult<Animal>> DeleteAnimal([FromQuery] int id)
-        {
-            var animal = await _animalRepository.DeleteAnimalById(id);
-
-            return Ok(animal);
-        }
-
-
     }
 }
